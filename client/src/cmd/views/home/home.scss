@@ -1,3 +1,5 @@
+@import '../../scss/mixins.scss';
+
 .navbar {
   background-color: var(--color-blue-grey-900);
 
@@ -61,29 +63,34 @@
 
     .image {
       position: relative;
-      width: calc(100% / 3);
+      width: 100%;
       padding: var(--spacing-1);
       height: 350px;
       cursor: pointer;
+
+      @include desktop {
+        width: calc(100% / 3);
+      }
 
       .inner {
         border-radius: 2px;
         position: absolute;
         inset: var(--spacing-1);
-        transition: 0.25s background-color ease-in-out;
-        // border: 1px solid rgba(0,0,0,0.5);
         
-        &:hover {
-          background-color: rgba(0,0,0,0.1);
-          // box-shadow: inset black 0px 0px 60px -12px;
+        @include desktop {
+          transition: 0.25s background-color ease-in-out;
 
-          .banner {
-            opacity: 1;
+          &:hover {
+            background-color: rgba(0,0,0,0.1);
 
-            .title, time, .tags {
-              transform: translate(0px, 0px);
+            .banner {
+              opacity: 1;
+
+              .title, time, .tags {
+                transform: translate(0px, 0px);
+              }
+
             }
-
           }
         }
 
@@ -92,13 +99,14 @@
           bottom: 0;
           left: 0;
           right: 0;
-          transition: 0.25s opacity ease-in-out;
-          opacity: 0;
-          // box-shadow: inset black 0px 0px 60px -12px;
-          // height: 80px;
           background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 90%);
           padding: var(--spacing-5) var(--spacing-4);
           color: white;
+          
+          @include desktop {
+            transition: 0.25s opacity ease-in-out;
+            opacity: 0;
+          }
 
           .title, time, .tags {
             transform: translate(0, 5px);
