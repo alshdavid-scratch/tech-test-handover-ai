@@ -7,23 +7,27 @@ import { Spinner } from '../../components/spinner/spinner.tsx';
 import { classNames } from '../../../platform/preact/class-names.ts';
 import { format } from 'date-fns'
 import { debounce } from '../../../platform/preact/debounce.ts';
+
 export class HomeViewModel {
   items: ServicesFeedsItem[]
   itemsSearch: ServicesFeedsItem[]
   isLoading: boolean
   initialLoad: boolean
+  searchLoading: boolean
 
   constructor() {
     this.items = []
     this.itemsSearch = []
     this.isLoading = false
     this.initialLoad = true
+    this.searchLoading = false
 
     makeObservable(this, {
       items: kind.array,
       itemsSearch: kind.array,
       isLoading: kind.value,
       initialLoad: kind.value,
+      searchLoading: kind.value,
     })
   }
 
@@ -39,6 +43,7 @@ export class HomeViewModel {
       await this.fetchFeed()
       return
     }
+    this.searchLoading = true
     this.fetchFeedDebounced(query)
   }
 
@@ -49,6 +54,8 @@ export class HomeViewModel {
     this.isLoading = true
 
     if (query) {
+      this.searchLoading = true
+
       const tags: string[] = []
       const users: string[] = []
       const words = query.split(' ')
@@ -79,6 +86,7 @@ export class HomeViewModel {
     }
     
     this.isLoading = false
+    this.searchLoading = false
   }
 }
 
@@ -104,19 +112,19 @@ export function HomeView() {
             <input 
               type="text" 
               onInput={(e:any) => vm.search(e.target.value)}
-              placeholder="🔍 Search" />
+              placeholder="🔍 Search - tag:name user:name" />
           
           </div>
         </div>
 
-        {vm.isLoading && vm.items.length === 0 && (
+        {((vm.searchLoading) || (vm.isLoading && vm.items.length === 0)) && (
           <div class="spinner-container">
             <Spinner>Loading...</Spinner>
           </div>
         )}
 
         <section class="images">
-          {(vm.itemsSearch.length ? vm.itemsSearch : vm.items).map((item) => (
+          {!vm.searchLoading && (vm.itemsSearch.length ? vm.itemsSearch : vm.items).map((item) => (
             <a class="image" href={item.link}>
               <div className="inner">
                 <div className="banner">
