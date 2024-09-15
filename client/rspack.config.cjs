@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs')
-const { HtmlRspackPlugin, CopyRspackPlugin } = require('@rspack/core')
+const { HtmlRspackPlugin, CopyRspackPlugin, CssExtractRspackPlugin } = require('@rspack/core')
 
 if (fs.existsSync(path.join(__dirname, 'dist'))) {
   fs.rmSync(path.join(__dirname, 'dist'), { recursive: true })
@@ -45,7 +45,7 @@ const config = {
       },
       {
         test: /\.(sass|scss)$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: [CssExtractRspackPlugin.loader, 'css-loader', 'sass-loader'],
         type: 'javascript/auto',
       },
       {
@@ -55,6 +55,7 @@ const config = {
     ]
   },
   plugins: [
+    new CssExtractRspackPlugin({}),
     new HtmlRspackPlugin({
       filename: 'index.html',
       template: path.join(__dirname, 'src', 'cmd', 'index.html'),
