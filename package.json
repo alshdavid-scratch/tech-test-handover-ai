@@ -10,6 +10,7 @@
     "css-loader": "*",
     "glob": "*",
     "google-charts": "*",
+    "mobx": "^6.13.2",
     "preact": "*",
     "preact-router": "*",
     "sass": "*",
@@ -18,5 +19,8 @@
     "style-loader": "*",
     "tsx": "*",
     "typescript": "*"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
   }
 }

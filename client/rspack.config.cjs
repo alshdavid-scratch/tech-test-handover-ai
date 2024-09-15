@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs')
-const { HtmlRspackPlugin } = require('@rspack/core')
+const { HtmlRspackPlugin, CopyRspackPlugin } = require('@rspack/core')
 
 if (fs.existsSync(path.join(__dirname, 'dist'))) {
   fs.rmSync(path.join(__dirname, 'dist'), { recursive: true })
@@ -58,6 +58,11 @@ const config = {
     new HtmlRspackPlugin({
       filename: 'index.html',
       template: path.join(__dirname, 'src', 'cmd', 'index.html'),
+    }),
+    new CopyRspackPlugin({
+      patterns: [
+        { from: 'src/assets', to: 'assets' }
+      ]
     })
   ],
   resolve: {
@@ -66,6 +71,14 @@ const config = {
   devServer: {
     hot: false,
     historyApiFallback: true,
+    proxy: [
+      {
+        context: ['/api/flickr'],
+        pathRewrite: { '^/api/flickr': '' },
+        changeOrigin: true,
+        target: 'https://www.flickr.com',
+      },
+    ],
   },
 }
 
