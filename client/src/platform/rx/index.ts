@@ -1,4 +1,4 @@
-// This is a rip of of mobx that slightly nicer to use
+// This is a rip off of mobx that's slightly nicer to use
 
 export type kind = typeof kind[keyof typeof kind];
 export const kind = Object.freeze({
