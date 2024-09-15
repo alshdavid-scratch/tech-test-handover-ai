@@ -8,6 +8,7 @@
     "@rspack/core": "*",
     "@types/node": "^22",
     "css-loader": "*",
+    "glob": "*",
     "google-charts": "*",
     "preact": "*",
     "preact-router": "*",

@@ -6,5 +6,8 @@ build:
 dev:
   npx rspack dev --mode production -c ./rspack.config.cjs
 
+
+test_files := `node -e "console.log(require('glob').globSync('./src/**/*.test.{ts,tsx}').join(' '))"`
+
 test: 
-  node --import tsx --test "./src/platform/intents/intents-service.test.ts"
+  node --import tsx --test {{ test_files }}

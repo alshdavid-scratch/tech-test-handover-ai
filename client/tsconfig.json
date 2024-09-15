@@ -13,8 +13,7 @@
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "lib": ["DOM", "ESNext"],
-    "types": []
+    "types": ["@types/node"]
   },
   "include": ["src"],
-  "exclude": ["src/platform/testing", "src/**/*.test.ts", "src/**/*.test.tsx"]
 }
