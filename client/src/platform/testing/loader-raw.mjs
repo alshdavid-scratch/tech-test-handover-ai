@@ -1,3 +1,5 @@
+// Register support for custom extensions in unit tests
+
 const extensionsRegex = /\.(csss|scss|)$/;
 
 export async function load(url, context, nextLoad) {

@@ -1,3 +1,5 @@
+// Register support for custom extensions in unit tests
+
 import { register } from "node:module";
 import * as url from "node:url";
 import * as path from "node:path";

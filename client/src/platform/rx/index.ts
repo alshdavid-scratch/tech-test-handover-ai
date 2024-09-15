@@ -1,5 +1,6 @@
 // This is a rip off of mobx that's slightly nicer to use
 
+
 export type kind = typeof kind[keyof typeof kind];
 export const kind = Object.freeze({
   array: Symbol('array'),
