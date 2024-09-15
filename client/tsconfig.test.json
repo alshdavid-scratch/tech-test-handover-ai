@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ESNext",
+    "jsx": "react",
+    "jsxFactory": "h",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "lib": ["ESNext"],
+    "types": ["@types/node"]
+  },
+  "include": ["src", "src/platform/testing", "src/**/*.test.ts", "src/**/*.test.tsx"]
+}

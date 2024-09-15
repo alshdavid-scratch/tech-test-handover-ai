@@ -1,0 +1,17 @@
+name: 'alshdavid/setup-nodejs'
+description: "Install Nodejs"
+
+inputs:
+  version:
+    description: 'Nodejs version'
+    default: "22.2.0"
+
+runs:
+  using: 'composite'
+  steps:
+    - name: "Install Nodejs" 
+      if: ${{ runner.os != 'Windows' }}
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+      run: source ${{ github.action_path }}/install.bash

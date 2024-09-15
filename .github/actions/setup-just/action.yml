@@ -1,0 +1,17 @@
+name: 'alshdavid/setup-just'
+description: "Install Just"
+
+inputs:
+  version:
+    description: 'Just version'
+    default: "1.26.0"
+
+runs:
+  using: 'composite'
+  steps:
+    - name: "Install Just" 
+      if: ${{ runner.os != 'Windows' }}
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+      run: source ${{ github.action_path }}/install.bash

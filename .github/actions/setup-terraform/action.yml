@@ -1,0 +1,17 @@
+name: 'alshdavid/setup-terraform'
+description: "Install Terraform"
+
+inputs:
+  version:
+    description: 'Terraform version'
+    default: "1.9.5"
+
+runs:
+  using: 'composite'
+  steps:
+    - name: "Install Just" 
+      if: ${{ runner.os != 'Windows' }}
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+      run: source ${{ github.action_path }}/install.bash
