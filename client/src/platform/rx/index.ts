@@ -44,6 +44,8 @@ export function makeObservable(target: any, properties: Record<string | number |
     inner[key] = target[key]
     
     if (k === kind.value) {
+      console.log(key)
+
       Object.defineProperty(target, key, {
         get() {
           return inner[key]
@@ -53,10 +55,8 @@ export function makeObservable(target: any, properties: Record<string | number |
           emit([key, k as any])
         },
       })
-      return
     }
-
-    if (k === kind.array || k === kind.object) {
+    else if (k === kind.array || k === kind.object) {
       inner[key] = buildProxy(target[key], (keys: any) => emit(keys))
 
       Object.defineProperty(target, key, {

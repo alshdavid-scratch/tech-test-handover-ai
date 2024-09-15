@@ -6,37 +6,78 @@ import { useViewModel } from '../../../platform/rx/preact.ts';
 import { Spinner } from '../../components/spinner/spinner.tsx';
 import { classNames } from '../../../platform/preact/class-names.ts';
 import { format } from 'date-fns'
+import { debounce } from '../../../platform/preact/debounce.ts';
 export class HomeViewModel {
   items: ServicesFeedsItem[]
+  itemsSearch: ServicesFeedsItem[]
   isLoading: boolean
   initialLoad: boolean
-  thing: any
 
   constructor() {
     this.items = []
+    this.itemsSearch = []
     this.isLoading = false
     this.initialLoad = true
 
     makeObservable(this, {
       items: kind.array,
+      itemsSearch: kind.array,
       isLoading: kind.value,
       initialLoad: kind.value,
     })
   }
 
   async onInit() {
-    await this.fetchMore()
+    await this.fetchFeed()
     this.initialLoad = false
   }
 
-  async fetchMore() {
+  fetchFeedDebounced = debounce((query: string) => this.fetchFeed(query), 500)
+
+  async search(query: string) {
+    if (!query) {
+      await this.fetchFeed()
+      return
+    }
+    this.fetchFeedDebounced(query)
+  }
+
+  async fetchFeed(query?: string) {
     if (this.isLoading) {
       return
     }
     this.isLoading = true
-    const response = await servicesFeedsPhotosPublicGet()
-    console.log(response)
-    this.items.push(...response.items)
+
+    if (query) {
+      const tags: string[] = []
+      const users: string[] = []
+      const words = query.split(' ')
+      for (const word of words) {
+        if (word.startsWith('#')) {
+          tags.push(word.substring(1))
+        }
+
+        if (word.startsWith('tag:')) {
+          tags.push(word.substring(4))
+        }
+
+        if (word.startsWith('user:')) {
+          users.push(word.substring(5))
+        }
+      }
+
+      const response = await servicesFeedsPhotosPublicGet({
+        tags,
+        ids: users
+      })
+  
+      this.itemsSearch = response.items
+    } else {
+      this.itemsSearch = []
+      const response = await servicesFeedsPhotosPublicGet()
+      this.items.push(...response.items)
+    }
+    
     this.isLoading = false
   }
 }
@@ -49,15 +90,24 @@ export function HomeView() {
       <nav class="navbar">
         <div className="content-max-width">
           <div>
-            <div class="logo">snickr</div>
+            <div class="logo">snickrs</div>
           </div>
-          <div>
-            <input class="search" type="text" placeholder="🔍 Search" />
+          <div className="search">
+            
           </div>
         </div>
       </nav>
       <main class="view-home content-max-width">
-        <h1>Explore</h1>
+        <div className="heading">
+          <h1>Explore</h1>
+          <div className='search'>
+            <input 
+              type="text" 
+              onInput={(e:any) => vm.search(e.target.value)}
+              placeholder="🔍 Search" />
+          
+          </div>
+        </div>
 
         {vm.isLoading && vm.items.length === 0 && (
           <div class="spinner-container">
@@ -66,7 +116,7 @@ export function HomeView() {
         )}
 
         <section class="images">
-          {vm.items.map((item) => (
+          {(vm.itemsSearch.length ? vm.itemsSearch : vm.items).map((item) => (
             <a class="image" href={item.link}>
               <div className="inner">
                 <div className="banner">
@@ -90,7 +140,7 @@ export function HomeView() {
       <footer className="load-more">
         <button 
           className={classNames({ loading: !vm.initialLoad && vm.isLoading })}
-          onClick={() => vm.fetchMore()}
+          onClick={() => vm.fetchFeed()}
           disabled={vm.isLoading}
           >Load More 🚀</button>
       </footer>
