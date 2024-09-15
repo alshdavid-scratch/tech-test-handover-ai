@@ -28,7 +28,10 @@ export type ServicesFeedsPhotosPublicGetOptions = {
   tagMode?: 'all' | 'any'
 }
 
-export function servicesFeedsPhotosPublicGet(options: ServicesFeedsPhotosPublicGetOptions = {}): Promise<ServicesFeedsPhotosPublicGetResponse> {
+export function servicesFeedsPhotosPublicGet(
+  windowRef: Window,
+  options: ServicesFeedsPhotosPublicGetOptions = {},
+): Promise<ServicesFeedsPhotosPublicGetResponse> {
   const params = new URLSearchParams()
   if (options.id) {
     params.set('id', options.id)
@@ -49,5 +52,5 @@ export function servicesFeedsPhotosPublicGet(options: ServicesFeedsPhotosPublicG
   params.set('format', 'json')
   params.set('nojsoncallback', '1')
 
-  return fetch(`/api/flickr/services/feeds/photos_public.gne?${params.toString()}`).then(r => r.json())
+  return windowRef.fetch(`/api/flickr/services/feeds/photos_public.gne?${params.toString()}`).then(r => r.json())
 }

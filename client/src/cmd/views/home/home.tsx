@@ -1,5 +1,5 @@
 import './home.scss'
-import { ServicesFeedsItem, servicesFeedsPhotosPublicGet } from '../../../platform/flickr-api/services-feeds-photos-public-get.ts';
+import { ServicesFeedsItem } from '../../../platform/flickr-api/services-feeds-photos-public-get.ts';
 import { h, Fragment } from "preact";
 import { makeObservable, kind } from '../../../platform/rx/index.ts'
 import { useViewModel } from '../../../platform/rx/preact.ts';
@@ -7,27 +7,30 @@ import { Spinner } from '../../components/spinner/spinner.tsx';
 import { classNames } from '../../../platform/preact/class-names.ts';
 import { format } from 'date-fns'
 import { debounce } from '../../../platform/preact/debounce.ts';
+import { FlickrService } from '../../../platform/flickr/flickr-service.ts';
+import { useInject } from '../../contexts/app.tsx';
 
 export class HomeViewModel {
+  query: string
   items: ServicesFeedsItem[]
-  itemsSearch: ServicesFeedsItem[]
   isLoading: boolean
   initialLoad: boolean
-  searchLoading: boolean
+  flickrService: FlickrService
 
-  constructor() {
+  constructor(
+    flickrService: FlickrService
+  ) {
+    this.query = ''
     this.items = []
-    this.itemsSearch = []
     this.isLoading = false
     this.initialLoad = true
-    this.searchLoading = false
+    this.flickrService = flickrService
 
     makeObservable(this, {
+      query: kind.value,
       items: kind.array,
-      itemsSearch: kind.array,
       isLoading: kind.value,
       initialLoad: kind.value,
-      searchLoading: kind.value,
     })
   }
 
@@ -36,62 +39,41 @@ export class HomeViewModel {
     this.initialLoad = false
   }
 
-  fetchFeedDebounced = debounce((query: string) => this.fetchFeed(query), 500)
+  fetchFeedDebounced = debounce(() => this.fetchFeed(), 500)
 
   async search(query: string) {
-    if (!query) {
+    this.query = query
+
+    if (!this.query) {
       await this.fetchFeed()
       return
     }
-    this.searchLoading = true
-    this.fetchFeedDebounced(query)
+
+    this.fetchFeedDebounced()
   }
 
-  async fetchFeed(query?: string) {
+  async fetchFeed() {
     if (this.isLoading) {
       return
     }
     this.isLoading = true
-
-    if (query) {
-      this.searchLoading = true
-
-      const tags: string[] = []
-      const users: string[] = []
-      const words = query.split(' ')
-      for (const word of words) {
-        if (word.startsWith('#')) {
-          tags.push(word.substring(1))
-        }
-
-        if (word.startsWith('tag:')) {
-          tags.push(word.substring(4))
-        }
-
-        if (word.startsWith('user:')) {
-          users.push(word.substring(5))
-        }
-      }
-
-      const response = await servicesFeedsPhotosPublicGet({
-        tags,
-        ids: users
-      })
-  
-      this.itemsSearch = response.items
-    } else {
-      this.itemsSearch = []
-      const response = await servicesFeedsPhotosPublicGet()
-      this.items.push(...response.items)
-    }
+    this.items = []
     
+    const response = await this.flickrService.getFeed(this.query)
+    this.items = response.items
+
     this.isLoading = false
-    this.searchLoading = false
+  }
+
+  async loadMore() {
+    const response = await this.flickrService.getFeed(this.query)
+    this.items.push(...response.items)
   }
 }
 
 export function HomeView() {
-  const vm = useViewModel(() => new HomeViewModel)
+  const flickrService = useInject(FlickrService)
+  const vm = useViewModel(() => new HomeViewModel(flickrService))
 
   return (
     <Fragment>
@@ -100,8 +82,8 @@ export function HomeView() {
           <div>
             <div class="logo">snickrs</div>
           </div>
-          <div className="search">
-            
+          <div>
+            <a href="https://github.com/alshdavid-scratch/tech-test-handover-ai"><img src="/assets/github.svg" /></a>
           </div>
         </div>
       </nav>
@@ -110,21 +92,22 @@ export function HomeView() {
           <h1>Explore</h1>
           <div className='search'>
             <input 
-              type="text" 
+              type="text"
+              value={vm.query}
               onInput={(e:any) => vm.search(e.target.value)}
               placeholder="🔍 Search - tag:name user:name" />
           
           </div>
         </div>
 
-        {((vm.searchLoading) || (vm.isLoading && vm.items.length === 0)) && (
+        {vm.isLoading && (
           <div class="spinner-container">
             <Spinner>Loading...</Spinner>
           </div>
         )}
 
         <section class="images">
-          {!vm.searchLoading && (vm.itemsSearch.length ? vm.itemsSearch : vm.items).map((item) => (
+          {!vm.isLoading && vm.items.map((item) => (
             <a class="image" href={item.link}>
               <div className="inner">
                 <div className="banner">
@@ -148,7 +131,7 @@ export function HomeView() {
       <footer className="load-more">
         <button 
           className={classNames({ loading: !vm.initialLoad && vm.isLoading })}
-          onClick={() => vm.fetchFeed()}
+          onClick={() => vm.loadMore()}
           disabled={vm.isLoading}
           >Load More 🚀</button>
       </footer>
