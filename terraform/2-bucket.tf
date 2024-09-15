@@ -45,14 +45,15 @@ resource "aws_s3_bucket_policy" "bucket-policy" {
 
 locals {
   mime_types = jsondecode(file("${path.module}/mime-types.json"))
+  upload_directory = "${path.module}/../client/dist/"
 }
 
 resource "aws_s3_object" "upload_object" {
-  for_each = fileset("${path.module}/../client/dist/", "*")
+  for_each = fileset("${upload_directory}", "**/*.*")
   bucket = aws_s3_bucket.bucket.id
-  key = each.value
+  key = replace(each.value, local.upload_directory, "")
   source = "${path.module}/../client/dist/${each.value}"
-  etag = filemd5("${path.module}/../client/dist/${each.value}")
+  etag = filemd5("${upload_directory}/${each.value}")
   content_type = lookup(local.mime_types, regex("\\.[^.]+$", each.value), null)
 }
 
