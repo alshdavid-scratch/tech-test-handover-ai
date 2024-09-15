@@ -4,20 +4,23 @@ export type ServicesFeedsPhotosPublicGetResponse = {
   description: string
   modified: string // Date "2024-09-15T04:23:14Z"
   generator: string
-  items: Array<{
-    title: string
-    link: string
-    media: {
-      m: string
-    },
-    date_taken: string // "2024-09-14T07:22:52-08:00"
-    description: string
-    published: string
-    author: string
-    author_id: string
-    tags: string
-    }>
+  items: Array<ServicesFeedsItem>
 }
+
+export type ServicesFeedsItem = {
+  title: string
+  link: string
+  media: {
+    m: string
+  },
+  date_taken: string // "2024-09-14T07:22:52-08:00"
+  description: string
+  published: string
+  author: string
+  author_id: string
+  tags: string
+}
+
 export type ServicesFeedsPhotosPublicGetOptions = {
   id?: string
   ids?: string[]

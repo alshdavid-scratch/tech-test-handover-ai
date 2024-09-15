@@ -1,4 +1,4 @@
-$page-width: 900px;
+$page-width: 1024px;
 
 body {
   margin: 0;
@@ -14,10 +14,6 @@ body {
 
 #root {
   display: contents;
-
-  & > {
-    flex: 1;
-  }
 }
 
 @mixin content-max-width {

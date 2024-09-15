@@ -8,6 +8,8 @@
     "@rspack/core": "*",
     "@types/node": "^22",
     "css-loader": "*",
+    "date-fn": "^0.0.2",
+    "date-fns": "^3.6.0",
     "glob": "*",
     "google-charts": "*",
     "preact": "*",

@@ -1,24 +1,24 @@
 import './home.scss'
-import { servicesFeedsPhotosPublicGet } from '../../../platform/flickr-api/services-feeds-photos-public-get.ts';
+import { ServicesFeedsItem, servicesFeedsPhotosPublicGet } from '../../../platform/flickr-api/services-feeds-photos-public-get.ts';
 import { h, Fragment } from "preact";
 import { makeObservable, kind } from '../../../platform/rx/index.ts'
 import { useViewModel } from '../../../platform/rx/preact.ts';
 import { Spinner } from '../../components/spinner/spinner.tsx';
 import { classNames } from '../../../platform/preact/class-names.ts';
-
+import { format } from 'date-fns'
 export class HomeViewModel {
-  images: string[]
+  items: ServicesFeedsItem[]
   isLoading: boolean
   initialLoad: boolean
   thing: any
 
   constructor() {
-    this.images = []
+    this.items = []
     this.isLoading = false
     this.initialLoad = true
 
     makeObservable(this, {
-      images: kind.array,
+      items: kind.array,
       isLoading: kind.value,
       initialLoad: kind.value,
     })
@@ -35,9 +35,8 @@ export class HomeViewModel {
     }
     this.isLoading = true
     const response = await servicesFeedsPhotosPublicGet()
-    for (const item of response.items) {
-      this.images.push(item.media.m)
-    }
+    console.log(response)
+    this.items.push(...response.items)
     this.isLoading = false
   }
 }
@@ -60,17 +59,29 @@ export function HomeView() {
       <main class="view-home content-max-width">
         <h1>Explore</h1>
 
-        {vm.isLoading && vm.images.length === 0 && (
+        {vm.isLoading && vm.items.length === 0 && (
           <div class="spinner-container">
             <Spinner>Loading...</Spinner>
           </div>
         )}
 
         <section class="images">
-          {vm.images.map((image, i) => (
-            <div class="image">
-              <img loading="lazy" key={i} src={image} />
-            </div>
+          {vm.items.map((item) => (
+            <a class="image" href={item.link}>
+              <div className="inner">
+                <div className="banner">
+                  <div className="title">{item.title}</div>
+                  <time datetime={item.published}>Published: {format(item.published, 'dd mm yyyy')}</time>
+                  <div className="tags">
+                    {item.tags && item.tags.split(' ').map(tag => <div>{tag}</div>)}
+                  </div>
+                </div>
+              </div>
+              <img 
+                loading="lazy"
+                key={item.link} 
+                src={item.media.m} />
+            </a>
           ))}
         </section>
       </main>
