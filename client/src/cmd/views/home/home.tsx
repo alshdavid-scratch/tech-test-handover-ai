@@ -71,6 +71,7 @@ export function HomeView() {
               <div className="inner">
                 <div className="banner">
                   <div className="title">{item.title}</div>
+                  <div className="author">{item.author}</div>
                   <time datetime={item.published}>Published: {format(item.published, 'dd mm yyyy')}</time>
                   <div className="tags">
                     {item.tags && item.tags.split(' ').map(tag => <div>{tag}</div>)}

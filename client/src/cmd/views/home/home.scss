@@ -65,10 +65,11 @@
       position: relative;
       width: 100%;
       padding: var(--spacing-1);
-      height: 350px;
+      height: 250px;
       cursor: pointer;
 
       @include desktop {
+        height: 350px;
         width: calc(100% / 3);
       }
 
@@ -86,7 +87,7 @@
             .banner {
               opacity: 1;
 
-              .title, time, .tags {
+              .title, time, .tags, .author {
                 transform: translate(0px, 0px);
               }
 
@@ -108,7 +109,7 @@
             opacity: 0;
           }
 
-          .title, time, .tags {
+          .title, time, .tags,  .author {
             transform: translate(0, 5px);
             transition: 0.25s transform ease-in-out;
           }
@@ -120,7 +121,7 @@
             
           }
 
-          time {
+          time, .author {
             font-size: 13px;
             display: block;
             opacity: 0.8;
