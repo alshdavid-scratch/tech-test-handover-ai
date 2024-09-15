@@ -1,17 +1,18 @@
+import { Fetcher } from "../dom/index.ts"
 import { servicesFeedsPhotosPublicGet } from "../flickr-api/services-feeds-photos-public-get.ts"
 
 export class FlickrService {
-  windowRef: Window
+  fetcher: Fetcher
 
   constructor(
-    windowRef: Window
+    fetcher: Fetcher
   ) {
-    this.windowRef = windowRef
+    this.fetcher = fetcher
   }
 
   async getFeed(query?: string) {
     if (!query) {
-      return servicesFeedsPhotosPublicGet(this.windowRef)
+      return servicesFeedsPhotosPublicGet(this.fetcher)
     }
 
     const tags: string[] = []
@@ -32,7 +33,7 @@ export class FlickrService {
       }
     }
 
-    return await servicesFeedsPhotosPublicGet(this.windowRef, {
+    return await servicesFeedsPhotosPublicGet(this.fetcher, {
       tags,
       ids: users
     })

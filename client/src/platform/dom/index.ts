@@ -1,0 +1,1 @@
+export interface Fetcher extends Pick<Window, 'fetch'> {}

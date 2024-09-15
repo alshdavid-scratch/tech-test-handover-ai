@@ -1,3 +1,5 @@
+import { Fetcher } from "../dom/index.ts"
+
 export type ServicesFeedsPhotosPublicGetResponse = {
   title: string
   link: string
@@ -29,7 +31,7 @@ export type ServicesFeedsPhotosPublicGetOptions = {
 }
 
 export function servicesFeedsPhotosPublicGet(
-  windowRef: Window,
+  fetcher: Fetcher,
   options: ServicesFeedsPhotosPublicGetOptions = {},
 ): Promise<ServicesFeedsPhotosPublicGetResponse> {
   const params = new URLSearchParams()
@@ -52,5 +54,5 @@ export function servicesFeedsPhotosPublicGet(
   params.set('format', 'json')
   params.set('nojsoncallback', '1')
 
-  return windowRef.fetch(`/api/flickr/services/feeds/photos_public.gne?${params.toString()}`).then(r => r.json())
+  return fetcher.fetch(`/api/flickr/services/feeds/photos_public.gne?${params.toString()}`).then(r => r.json())
 }

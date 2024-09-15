@@ -44,8 +44,6 @@ export function makeObservable(target: any, properties: Record<string | number |
     inner[key] = target[key]
     
     if (k === kind.value) {
-      console.log(key)
-
       Object.defineProperty(target, key, {
         get() {
           return inner[key]
