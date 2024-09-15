@@ -1,6 +1,6 @@
 import { createContext } from 'preact'
 import { useContext, useEffect, useState } from 'preact/hooks'
-import { Notifiable, OnChange } from '../../platform/rx-db/rx-db.ts'
+import { Notifiable, OnChange } from '../../platform/rx-db/index.ts'
 
 export const AppContext = createContext<Map<any, any>>(new Map())
 
