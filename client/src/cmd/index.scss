@@ -14,6 +14,10 @@ body {
 
 #root {
   display: contents;
+
+  & > {
+    flex: 1;
+  }
 }
 
 @mixin content-max-width {

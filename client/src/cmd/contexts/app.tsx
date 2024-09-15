@@ -1,6 +1,5 @@
 import { createContext } from 'preact'
-import { useContext, useEffect, useState } from 'preact/hooks'
-import { Notifiable, OnChange } from '../../platform/rx-db/index.ts'
+import { useContext } from 'preact/hooks'
 
 export const AppContext = createContext<Map<any, any>>(new Map())
 
@@ -16,18 +15,5 @@ export function useInject<T extends unknown>(key: any): T {
     throw new Error(`Nothing provided for key ${key}`)
   }
 
-  // This is probably a wasteful approach to reactivity
-  if (!(OnChange in target)) {
-    return target
-  }
-
-  const [targetNotifiable, setTargetNotifiable] = useState<[T & Notifiable]>([target])
-
-  useEffect(() => {
-    const fn = () => setTargetNotifiable([target])
-    const dispose = targetNotifiable[0][OnChange].subscribe(fn)
-    return () => dispose()
-  }, [target]);
-  
-  return targetNotifiable[0] as T
+  return target
 }
