@@ -12,6 +12,7 @@
     "date-fns": "^3.6.0",
     "glob": "*",
     "google-charts": "*",
+    "happy-dom": "^15.7.4",
     "preact": "*",
     "preact-router": "*",
     "sass": "*",

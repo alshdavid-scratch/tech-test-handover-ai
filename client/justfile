@@ -1,5 +1,4 @@
 set windows-shell := ["pwsh", "-NoLogo", "-NoProfileLoadTime", "-Command"]
-test_files := `node -e "console.log(require('glob').globSync('./src/**/*.test.{ts,tsx}').join(' '))"`
 
 build:
   npx rspack --mode production -c ./rspack.config.cjs
@@ -8,4 +7,4 @@ dev:
   npx rspack dev -c ./rspack.config.cjs
 
 test: 
-  node --import tsx --import "./src/platform/testing/loader.mjs" --test {{ test_files }}
+  node --import tsx --import "./test/loaders/loader.mjs" ./test/main.ts

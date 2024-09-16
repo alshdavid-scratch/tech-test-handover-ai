@@ -1,6 +1,8 @@
 import { createContext } from 'preact'
 import { useContext } from 'preact/hooks'
 
+export type ProviderMap = Map<any, any>
+
 export const AppContext = createContext<Map<any, any>>(new Map())
 
 export function useAppContext(): Map<any, unknown> {

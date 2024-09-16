@@ -1,7 +1,7 @@
 import { beforeEach, describe, test } from 'node:test'
 import * as assert from 'node:assert'
 import { FlickrService } from './flickr-service.ts'
-import { MockedInterface, mockInterface } from '../testing/dynamic-mock.ts'
+import { MockedInterface, mockInterface } from '../../../test/dynamic-mock/dynamic-mock.ts'
 import { Fetcher } from '../dom/index.ts'
 
 describe('FlickrService', () => {
