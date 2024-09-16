@@ -31,6 +31,8 @@ export class FlickrService {
       if (word.startsWith('user:')) {
         users.push(word.substring(5))
       }
+
+      tags.push(word)
     }
 
     return await servicesFeedsPhotosPublicGet(this.fetcher, {
